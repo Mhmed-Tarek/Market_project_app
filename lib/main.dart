@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.deepPurple,
       ),
-      //home: ProductScreen( "320", "Desks", "Desk","asset/images/desks.jpg" ) ,
+      //home: ProductScreen( "320", "Desks", "Desk","https://i.imgur.com/eEwPDb0.jpg" ) ,
       home: StartScreen(  ) ,
     );
   }

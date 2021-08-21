@@ -45,6 +45,9 @@ class _ProductScreenState extends State<ProductScreen> {
 
           CustomScrollView(
 
+
+            controller: _scrollController,
+
             slivers: <Widget>[
 
 
@@ -340,42 +343,8 @@ class _ProductScreenState extends State<ProductScreen> {
             ],
           ),
 
-          Positioned(
-            right:20,
-            top: MediaQuery.of(context).size.width*1.01 ,
-            child: FloatingActionButton(
-              elevation: 0.0,
-              onPressed: () {
-                // Add your onPressed code here!
-              },
-              child: const Icon(Icons.shopping_cart),
-              backgroundColor: HexColor("8499d8"),
-            ),
-          ),
 
-
-          //_buldma (),
-
-          // Positioned(
-          //
-          //
-          //
-          //   top: top,
-          //
-          //   right: 16,
-          //
-          //   child: Container(
-          //   height: 120.0,
-          //   width: 120.0,
-          //   decoration: BoxDecoration(
-          //     image: DecorationImage(
-          //       image: AssetImage(
-          //           'asset/images/ProductAsset/cart.png'),
-          //       fit: BoxFit.fill,
-          //     ),
-          //     shape: BoxShape.circle,
-          //   ),
-          // ), ),
+          _sliverButtom(),
 
 
         ],
@@ -384,7 +353,114 @@ class _ProductScreenState extends State<ProductScreen> {
 
 
 
+
+
   }
+
+
+  late ScrollController _scrollController;
+  double top = 256.0 - 4.0;
+  void initState() {
+    super.initState();
+    _scrollController = new ScrollController();
+    _scrollController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+
+  Widget _sliverButtom() {
+    final double defaultTopMargin =  MediaQuery.of(context).size.width*0.9;
+    final double scaleStart =  MediaQuery.of(context).size.width*0.9 - (20) ;
+    final double scaleEnd = scaleStart / 2;
+
+    double top = defaultTopMargin;
+    double scale = 1.0;
+    if (_scrollController.hasClients) {
+      double offset = _scrollController.offset;
+      top -= offset;
+      if (offset < defaultTopMargin - scaleStart) {
+        //offset small => don't scale down
+        scale = 1.0;
+      } else if (offset < defaultTopMargin - scaleEnd) {
+        //offset between scaleStart and scaleEnd => scale down
+        scale = (defaultTopMargin - scaleEnd - offset) / scaleEnd;
+      } else {
+        //offset passed scaleEnd => hide fab
+        scale = 0.0;
+      }
+    }
+
+    return Positioned(
+        top: top,
+        right: 16.0,
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()..scale(scale),
+          child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0, 4),
+                            blurRadius: 5.0)
+                      ],
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [0.0, 1.0],
+                        colors: [
+                          HexColor("#7995d3"), HexColor("#a5a6dc"),
+                        ],
+                      ),
+                      color: Colors.deepPurple.shade300,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape:
+                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100.0),
+                          ),
+                        ),
+                        minimumSize: MaterialStateProperty.all(Size(70, 70)),
+                        backgroundColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                        // elevation: MaterialStateProperty.all(3),
+                        shadowColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                      ),
+                      onPressed: () {},
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Icon(
+                            Icons.shopping_cart,
+                            size: 40,
+                          )),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
+  }
+
+
 }
 
 
